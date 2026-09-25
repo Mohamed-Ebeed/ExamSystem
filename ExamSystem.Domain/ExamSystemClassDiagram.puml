@@ -1,0 +1,60 @@
+@startuml
+skinparam classAttributeIconSize 0
+
+interface ICloneable
+interface "IComparable<T>" as IComparable
+
+class Answer {
+  +AnswerId : int
+  +AnswerText : string
+}
+
+abstract class Question {
+  +Header : string
+  +Body : string
+  +Mark : int
+  +AnswerList : Answer[]
+  +RightAnswer : Answer
+  +{abstract} Type : QuestionType
+}
+class TrueOrFalseQuestion
+class MCQQuestion
+
+abstract class Exam {
+  +TimeMinutes : int
+  +NumberOfQuestions : int
+  +Subject : Subject
+  +{abstract} ShowExam()
+  +AddQuestion(q : Question)
+  +CalculateGrade() : int
+}
+class FinalExam
+class PracticalExam
+
+class Subject {
+  +SubjectId : int
+  +SubjectName : string
+  +Exam : Exam
+  +CreateExam(type, time, questions) : Exam
+}
+
+class QuestionFactory <<static>>
+
+Question <|-- TrueOrFalseQuestion
+Question <|-- MCQQuestion
+Exam <|-- FinalExam
+Exam <|-- PracticalExam
+Question "1" o-- "2..*" Answer : AnswerList
+Exam "1" o-- "*" Question
+Subject "1" -- "0..1" Exam
+QuestionFactory ..> Question : creates
+
+ICloneable <|.. Answer
+ICloneable <|.. Question
+ICloneable <|.. Exam
+ICloneable <|.. Subject
+IComparable <|.. Answer
+IComparable <|.. Question
+IComparable <|.. Exam
+IComparable <|.. Subject
+@enduml
